@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XQ Wellness - Premium Spa Courses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2d3436; /* Màu Xám Than Ánh Kim - H?p m?nh Kim */
+            --gold-accent: #d4af37;
+            --soft-bg: #f8edc5; /* Vàng óng - Th? sinh Kim */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--soft-bg);
+            /* Thêm hi?u ?ng gradient t?o d? "óng" mu?t mà cho n?n */
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 50%, rgba(212, 175, 55, 0.15) 100%);
+            background-attachment: fixed;
+            color: #2d3436;
+            scroll-behavior: smooth;
+        }
+        .serif-title { font-family: 'Playfair Display', serif; }
+        
+        .glass-header {
+            background: rgba(45, 52, 54, 0.9); /* Ð?ng b? xám kim lo?i */
+            backdrop-filter: blur(12px);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-shadow:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        .lang-active {
+            border-bottom: 2px solid var(--gold-accent);
+            color: var(--gold-accent);
+        }
+
+        .btn-hover {
+            transition: all 0.3s ease;
+        }
+        .btn-hover:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        #music-toggle {
+            position: fixed;
+            bottom: 120px;
+            right: 24px;
+            z-index: 100;
+            background: white;
+            padding: 14px;
+            border-radius: 50%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            cursor: pointer;
+        }
+
+        .benefit-tag {
+            background: #f1f2f6; /* N?n xám b?c nh?t */
+            color: #2d3436;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .section-divider {
+            position: relative;
+            text-align: center;
+            margin: 5rem 0 3rem;
+        }
+        .section-divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #d4af37, transparent);
+            z-index: 1;
+        }
+        .section-divider span {
+            background: var(--soft-bg);
+            padding: 0 24px;
+            position: relative;
+            z-index: 2;
+            color: var(--primary-color);
+            letter-spacing: 0.1em;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+        .ai-glow { animation: pulse-gold 2s infinite; }
+
+        /* Hi?u ?ng ?n ban d?u */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, visibility;
+        }
+
+        /* Khi class .is-visible du?c thêm vào, th? s? hi?n ra */
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+    </style>
+</head>
+<body class="pb-32 md:pb-40">
+
+    <!-- Audio -->
+    <audio id="spa-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    <div id="music-toggle" onclick="toggleMusic()">
+        <span id="music-icon" class="text-xl">??</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-header text-white sticky top-0 z-50 py-4 px-6 shadow-lg">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="serif-title font-bold text-xl text-[#d4af37]">XQ Spa & Wellness</div>
+            <div class="flex gap-4 text-[11px] md:text-sm font-semibold tracking-widest uppercase">
+                <button onclick="changeLang('vi')" id="lang-vi" class="lang-active">VN ????</button>
+                <button onclick="changeLang('en')" id="lang-en">EN ????</button>
+                <button onclick="changeLang('ko')" id="lang-ko">KO ????</button>
+                <button onclick="changeLang('zh')" id="lang-zh">ZH ????</button>
+                <button onclick="changeLang('th')" id="lang-th">TH ????</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="bg-[#2d3436] text-white pt-20 pb-40 px-6 text-center rounded-b-[4rem] relative overflow-hidden">
+        <div class="absolute inset-0 opacity-25">
+             <video autoplay muted loop playsinline class="w-full h-full object-cover">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-spa-and-massage-room-with-candles-and-stones-42874-large.mp4" type="video/mp4">
+             </video>
+        </div>
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <h1 id="txt-title" class="serif-title text-4xl md:text-6xl font-bold mb-4 text-[#d4af37]">XQ DU?NG SINH TR? LI?U</h1>
+            <p id="txt-tagline" class="italic text-lg text-gray-200">"Khoi ngu?n sinh khí - Cham sóc thân tâm"</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 -mt-24 relative z-20">
+        
+        <!-- AI Advisor -->
+        <section class="fade-in-section bg-white rounded-[2.5rem] p-8 shadow-2xl mb-12 border border-yellow-500/10 ai-glow">
+            <div class="flex flex-col md:flex-row gap-8 items-center">
+                <div class="md:w-1/3 text-center md:text-left">
+                    <h2 id="txt-ai-title" class="serif-title text-2xl font-bold text-[#2d3436] mb-2">Tr? Lý AI Du?ng Sinh</h2>
+                    <p id="txt-ai-desc" class="text-sm text-slate-500">Chia s? tình tr?ng c?a b?n, AI s? g?i ý li?u trình phù h?p nh?t.</p>
+                </div>
+                <div class="md:w-2/3 w-full space-y-4">
+                    <textarea id="aiInput" rows="2" class="w-full p-4 rounded-2xl border border-slate-100 bg-slate-50 focus:ring-2 focus:ring-[#d4af37] outline-none text-sm transition-all" placeholder="Ví d?: Tôi thu?ng xuyên m?t m?i và dau m?i vai gáy..."></textarea>
+                    <button onclick="getAIConsultation()" id="aiBtn" class="w-full bg-[#2d3436] text-white py-4 rounded-xl font-bold btn-hover shadow-lg">
+                        <span id="txt-ai-btn">Tu V?n Li?u Trình ?</span>
+                    </button>
+                    <div id="aiResponseContainer" class="hidden mt-4 p-6 bg-yellow-50 rounded-2xl border border-yellow-200 text-sm italic text-slate-700 leading-relaxed shadow-inner">
+                        <div id="aiText"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Course Sections -->
+        <div class="section-divider fade-in-section">
+            <span id="txt-sec1-title" class="serif-title text-2xl md:text-3xl font-bold uppercase">I. Li?u Trình Ph?c H?i</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12" id="grid-recovery"></div>
+
+        <div class="section-divider fade-in-section">
+            <span id="txt-sec2-title" class="serif-title text-2xl md:text-3xl font-bold uppercase">II. Tr? Li?u Chuyên Sâu</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10" id="grid-therapy"></div>
+
+        <div class="section-divider fade-in-section">
+            <span id="txt-combo-title" class="serif-title text-2xl md:text-3xl font-bold uppercase">III. Combo Hoàng Gia</span>
+        </div>
+        
+        <section class="fade-in-section bg-[#2d3436] rounded-[3rem] p-10 md:p-16 shadow-2xl text-white relative overflow-hidden mb-24">
+            <div class="absolute top-0 right-0 p-8 opacity-10"><span class="text-9xl">??</span></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto relative z-10">
+                <!-- Combo 1 -->
+                <div class="relative bg-[#2d3436] p-8 rounded-[2rem] border border-white/20 hover:border-yellow-500/50 transition-all text-left flex flex-col overflow-hidden shadow-2xl">
+                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-30">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-applying-massage-oil-to-a-womans-back-42873-large.mp4" type="video/mp4">
+                    </video>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="font-bold text-2xl text-yellow-500 italic">Combo "XQ Healing"</span>
+                            <span class="font-bold text-xl">799k</span>
+                        </div>
+                        <p id="txt-combo1-desc" class="text-sm text-gray-300 italic border-l border-yellow-500/50 pl-4 mb-8 flex-grow leading-relaxed">90 phút • Tr? li?u da t?ng k?t h?p ph?c h?i sâu gi?a C? vai gáy và G?i d?u th?o m?c.</p>
+                        <a href="https://booking-link.com/healing" class="w-full py-4 bg-yellow-600/20 border border-yellow-500/50 text-yellow-500 rounded-2xl text-center font-bold text-sm btn-hover uppercase tracking-widest block txt-btn-book backdrop-blur-sm">Ð?t l?ch ngay</a>
+                    </div>
+                </div>
+                <!-- Combo 2 -->
+                <div class="relative bg-[#2d3436] p-8 rounded-[2rem] border border-yellow-500/50 text-left flex flex-col shadow-[0_0_30px_rgba(212,175,55,0.15)] overflow-hidden">
+                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-relaxing-in-a-bath-full-of-flowers-42872-large.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-gradient-to-br from-yellow-600/30 to-transparent z-0"></div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="font-bold text-2xl text-yellow-400 italic">Vuong Gi? Luxury</span>
+                            <span class="font-bold text-2xl text-yellow-400">1.999k</span>
+                        </div>
+                        <p id="txt-combo2-desc" class="text-sm text-gray-100 italic border-l border-yellow-500/80 pl-4 mb-8 flex-grow leading-relaxed">120 phút • Li?u pháp vuong gi? tinh túy nh?t, bao g?m ngâm chân th?o du?c và toàn thân.</p>
+                        <a href="https://booking-link.com/luxury" class="w-full py-4 bg-yellow-500 text-[#2d3436] rounded-2xl text-center font-bold text-sm btn-hover uppercase tracking-widest block txt-btn-book shadow-[0_0_15px_rgba(212,175,55,0.4)]">Ð?t l?ch ngay</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Location / Map Section -->
+        <div class="section-divider fade-in-section">
+            <span id="txt-map-sec-title" class="serif-title text-2xl md:text-3xl font-bold uppercase">IV. V? Trí XQ Spa</span>
+        </div>
+        <section class="fade-in-section bg-white rounded-[2.5rem] p-8 md:p-10 shadow-2xl border border-slate-100 text-center mb-28">
+            <h3 id="txt-map-title" class="serif-title text-2xl md:text-3xl font-bold text-[#2d3436] mb-3">?? Ð?a Ch? C?a Chúng Tôi</h3>
+            <p id="txt-map-address" class="text-slate-600 font-semibold mb-8 text-base md:text-lg">64 Tr?n Phú, L?c Th?, Nha Trang, Khánh Hòa</p>
+            
+            <div class="w-full h-80 md:h-[450px] rounded-[1.5rem] overflow-hidden shadow-inner border-2 border-slate-50">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3899.0664985652516!2d109.19429181525996!3d12.243764891336496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3170677e1bf3c98d%3A0x6b72a6b4122d1df7!2s64%20Tr%E1%BA%A7n%20Ph%C3%BA%2C%20L%E1%BB%99c%20Th%E1%BB%8D%2C%20Nha%20Trang%2C%20Kh%C3%A1nh%20H%C3%B2a%2C%20Vietnam!5e0!3m2!1sen!2s!4v1710400000000!5m2!1sen!2s" 
+                    class="w-full h-full border-0"
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Nav -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 p-5 shadow-2xl z-50">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-4">
+            <a href="https://zalo.me/0901234567" target="_blank" class="btn-hover flex-1 bg-[#0068ff] text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest text-sm">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" width="22" height="22" alt="Zalo">
+                <span id="btn-zalo">Ð?t L?ch Zalo</span>
+            </a>
+            <a href="tel:0901234567" class="btn-hover flex-1 bg-[#2d3436] text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest text-sm">
+                <span>??</span>
+                <span id="btn-call">Hotline: 090.123.4567</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'vi';
+        const apiKey = ""; 
+
+        const serviceData = [
+            { id: 'foot', cat: 'recovery', img: 'https://images.unsplash.com/photo-1519415510236-8559b1956a60?auto=format&fit=crop&w=800&q=80', video: 'https://assets.mixkit.co/videos/preview/mixkit-woman-enjoying-a-massage-in-a-spa-42870-large.mp4', prices: '30p: 199k | 60p: 329k', link: 'https://booking-link.com/foot' },
+            { id: 'head', cat: 'recovery', img: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80', video: 'https://assets.mixkit.co/videos/preview/mixkit-close-up-of-a-woman-receiving-a-head-massage-42868-large.mp4', prices: '45p: 249k | 60p: 349k', link: 'https://booking-link.com/head' },
+            { id: 'neck', cat: 'therapy', img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecee?auto=format&fit=crop&w=800&q=80', video: 'https://assets.mixkit.co/videos/preview/mixkit-detail-of-a-massage-with-hot-stones-42869-large.mp4', prices: '45p: 399k | 60p: 549k', link: 'https://booking-link.com/neck' },
+            { id: 'lady', cat: 'therapy', img: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&w=800&q=80', video: 'https://assets.mixkit.co/videos/preview/mixkit-candles-and-stones-in-a-spa-42871-large.mp4', prices: '45p: 499k | 60p: 649k', link: 'https://booking-link.com/lady' },
+            { id: 'thai', cat: 'therapy', img: 'https://images.unsplash.com/photo-1544161513-d87f5bb2b45e?auto=format&fit=crop&w=800&q=80', video: 'https://assets.mixkit.co/videos/preview/mixkit-woman-receiving-a-massage-on-her-back-42867-large.mp4', prices: '60p: 499k | 90p: 699k', link: 'https://booking-link.com/thai' },
+            { id: 'body', cat: 'therapy', img: 'https://images.unsplash.com/photo-1512290923902-8a9f81dc206e?auto=format&fit=crop&w=800&q=80', video: 'https://assets.mixkit.co/videos/preview/mixkit-masseur-massaging-a-womans-back-with-oil-42866-large.mp4', prices: '60p: 599k | 90p: 799k', link: 'https://booking-link.com/body' }
+        ];
+
+        const translations = {
+            vi: {
+                title: "XQ DU?NG SINH TR? LI?U",
+                tagline: '"Khoi ngu?n sinh khí - Cham sóc thân tâm"',
+                aiTitle: "Tr? Lý AI Du?ng Sinh",
+                aiDesc: "Chia s? tình tr?ng c?a b?n, AI s? g?i ý li?u trình phù h?p nh?t.",
+                aiBtn: "Tu V?n Li?u Trình ?",
+                sec1Title: "I. Li?u Trình Ph?c H?i",
+                sec2Title: "II. Tr? Li?u Chuyên Sâu",
+                comboTitle: "III. Combo Hoàng Gia",
+                combo1Desc: "90 phút • Tr? li?u da t?ng k?t h?p ph?c h?i sâu gi?a C? vai gáy và G?i d?u th?o m?c.",
+                combo2Desc: "120 phút • Li?u pháp vuong gi? tinh túy nh?t, bao g?m ngâm chân th?o du?c và toàn thân.",
+                btnZalo: "Ð?t L?ch Zalo",
+                btnCall: "Hotline: 090.123.4567",
+                btnBook: "Ð?t l?ch ngay",
+                mapSecTitle: "IV. V? Trí XQ Spa",
+                mapTitle: "?? Ð?a Ch? C?a Chúng Tôi",
+                mapAddress: "64 Tr?n Phú, L?c Th?, Nha Trang, Khánh Hòa",
+                services: {
+                    foot: { name: "Massage Chân B?m Huy?t", desc: "S? d?ng k? thu?t ?n huy?t d?o t?i lòng bàn chân giúp luu thông khí huy?t, gi?m tê bì và th?i d?c n?i t?ng.", meta: "30 - 60 PHÚT", tags: ["Gi?m m?t m?i", "Ng? ngon"] },
+                    head: { name: "G?i Ð?u Du?ng Sinh", desc: "K?t h?p g?i th?o du?c t? nhiên v?i k? thu?t massage vùng d?u, c?, vai, gáy giúp gi?i t?a cang th?ng th?n kinh.", meta: "45 - 60 PHÚT", tags: ["X? stress", "S?ch gàu"] },
+                    neck: { name: "Tr? Li?u C? Vai Gáy", desc: "T?p trung d? thông kinh l?c vùng d?i chùy, gi?i t?a bó co c?ng do ng?i lâu và gi?m dau d?u thi?u máu não.", meta: "45 - 60 PHÚT", tags: ["H?t dau m?i", "Luu thông máu"] },
+                    lady: { name: "Du?ng Sinh C? T? Cung", desc: "Li?u pháp dá nóng và ng?i c?u ?m giúp làm ?m t? cung, d?y hàn khí và di?u hòa n?i ti?t t? n?.", meta: "45 - 60 PHÚT", tags: ["?m t? cung", "Ðào th?i d?c t?"] },
+                    thai: { name: "Massage Thái C? Truy?n", desc: "K? thu?t kéo giãn co và b?m huy?t chuyên sâu theo phong cách Thái, giúp gi?i phóng hoàn toàn cang th?ng và tang d? linh ho?t.", meta: "60 - 90 PHÚT", tags: ["Kéo giãn co", "Thu giãn sâu"] },
+                    body: { name: "Thông Kinh L?c Toàn Thân", desc: "Massage l?c sâu d?c theo các du?ng kinh l?c giúp gi?i phóng t?c ngh?n và ph?c h?i sinh l?c m?nh m?.", meta: "60 - 90 PHÚT", tags: ["Ph?c h?i th? l?c", "D?o dai co"] }
+                }
+            },
+            en: {
+                title: "XQ WELLNESS THERAPY",
+                tagline: '"Source of Vitality - Care for Body & Soul"',
+                aiTitle: "AI Wellness Advisor",
+                aiDesc: "Share your symptoms, AI will suggest the best course for you.",
+                aiBtn: "Consult Now ?",
+                sec1Title: "I. Recovery Courses",
+                sec2Title: "II. Intensive Therapy",
+                comboTitle: "III. Royal Combo",
+                combo1Desc: "90 mins • Multi-level therapy combined with deep recovery between Neck/Shoulder and Head Spa.",
+                combo2Desc: "120 mins • The most elite royal therapy, including herbal foot bath and full body massage.",
+                btnZalo: "Zalo Booking",
+                btnCall: "Call: 090.123.4567",
+                btnBook: "Book Now",
+                mapSecTitle: "IV. XQ Spa Location",
+                mapTitle: "?? Our Location",
+                mapAddress: "64 Tran Phu St, Loc Tho Ward, Nha Trang City",
+                services: {
+                    foot: { name: "Foot Reflexology", desc: "Using pressure point techniques on the soles to improve circulation, reduce numbness, and detoxify organs.", meta: "30 - 60 MINS", tags: ["Fatigue relief", "Better sleep"] },
+                    head: { name: "Herbal Head Spa", desc: "Combined natural herbal wash with scalp/neck/shoulder massage to release neurological stress.", meta: "45 - 60 MINS", tags: ["De-stress", "Clean scalp"] },
+                    neck: { name: "Neck & Shoulder Therapy", desc: "Focuses on meridian clearing, releasing tight muscles from long sitting, and reducing headaches.", meta: "45 - 60 MINS", tags: ["Pain relief", "Blood flow"] },
+                    lady: { name: "Womb Wellness", desc: "Hot stone and warm mugwort therapy to warm the uterus, expel cold air, and balance hormones.", meta: "45 - 60 MINS", tags: ["Warm womb", "Detoxify"] },
+                    thai: { name: "Traditional Thai Massage", desc: "Deep stretching and acupressure techniques in the traditional Thai style, helping to completely release tension and increase flexibility.", meta: "60 - 90 MINS", tags: ["Muscle stretch", "Deep relaxation"] },
+                    body: { name: "Full Body Meridian", desc: "Deep pressure massage along meridian lines to release blockages and powerfully restore vitality.", meta: "60 - 90 MINS", tags: ["Restore energy", "Muscle flexibility"] }
+                }
+            },
+            ko: {
+                title: "XQ ??? ???",
+                tagline: '"??? ?? - ?? ??? ??"',
+                aiTitle: "AI ??? ?????",
+                aiBtn: "?? ???? ?",
+                sec1Title: "I. ?? ??",
+                sec2Title: "II. ?? ?? ??",
+                comboTitle: "III. ?? ??",
+                btnBook: "?? ??",
+                mapSecTitle: "IV. XQ ?? ??",
+                mapTitle: "?? ??? ?",
+                mapAddress: "??? ??? ?? 64??",
+                services: {
+                    foot: { name: "? ????", desc: "???? ???? ???? ?? ??? ???? ?? ??? ????.", meta: "30 - 60 ?", tags: ["?? ??", "??"] },
+                    head: { name: "?? ??", desc: "?? ?? ??? ??/?/?? ???? ???? ????? ?????.", meta: "45 - 60 ?", tags: ["???? ??", "?? ??"] },
+                    neck: { name: "? ? ?? ??", desc: "?? ??? ?? ??? ???? ?? ??? ?? ??? ?????.", meta: "45 - 60 ?", tags: ["?? ??", "?? ??"] },
+                    lady: { name: "?? ?? ??", desc: "?? ??? ? ?? ??? ??? ???? ?? ??? ??? ????.", meta: "45 - 60 ?", tags: ["?? ??", "?? ??"] },
+                    thai: { name: "?? ?? ???", desc: "?? ??? ????? ?? ??? ??? ??? ?? ?? ???? ?????.", meta: "60 - 90 ?", tags: ["?? ????", "?? ??"] },
+                    body: { name: "?? ?? ???", desc: "??? ?? ?? ???? ????? ???? ??????.", meta: "60 - 90 ?", tags: ["?? ??", "???"] }
+                }
+            },
+            zh: {
+                title: "XQ ????",
+                tagline: '"???? - ????"',
+                aiBtn: "???? ?",
+                sec1Title: "I. ????",
+                sec2Title: "II. ??????",
+                comboTitle: "III. ????",
+                btnBook: "????",
+                mapSecTitle: "IV. XQ ????",
+                mapTitle: "?? ?????",
+                mapAddress: "?????????64?",
+                services: {
+                    foot: { name: "??????", desc: "???????????????,????,???????", meta: "30 - 60 ??", tags: ["????", "??"] },
+                    head: { name: "?????", desc: "???????????????,?????????", meta: "45 - 60 ??", tags: ["????", "????"] },
+                    neck: { name: "??????", desc: "???????????????,???????", meta: "45 - 60 ??", tags: ["????", "????"] },
+                    lady: { name: "??????", desc: "????????????,????,????????", meta: "45 - 60 ??", tags: ["????", "????"] },
+                    thai: { name: "??????", desc: "?????????????????,??????????,????????", meta: "60 - 90 ??", tags: ["????", "????"] },
+                    body: { name: "??????", desc: "?????????,??????,???????", meta: "60 - 90 ??", tags: ["????", "????"] }
+                }
+            },
+            th: {
+                title: "XQ ?????? ???????",
+                tagline: '"????????????????????"',
+                aiBtn: "???????????? ?",
+                sec1Title: "I. ???????????",
+                sec2Title: "II. ??????????????????",
+                comboTitle: "III. ????? ?????",
+                btnBook: "?????????",
+                mapSecTitle: "IV. ??????? XQ ???",
+                mapTitle: "?? ?????????????",
+                mapAddress: "64 ?????????? ?????????? ?????",
+                services: {
+                    foot: { name: "???????????????", desc: "??????????????????????????????????????????????????????????????????", meta: "30 - 60 ????", tags: ["????????", "????????"] },
+                    head: { name: "???????????????", desc: "???????????????????????????????????????????????????????", meta: "45 - 60 ????", tags: ["??????????", "??????????"] },
+                    neck: { name: "????????????", desc: "????????????????????????????????????????????????", meta: "45 - 60 ????", tags: ["??????", "?????????????"] },
+                    lady: { name: "????? ????", desc: "??????????????????????????????????????????????????????", meta: "45 - 60 ????", tags: ["?????????", "?????????"] },
+                    thai: { name: "?????????", desc: "??????????????????????????????????????????????? ???????????????????????????????????????????????????", meta: "60 - 90 ????", tags: ["?????????????", "??????????????"] },
+                    body: { name: "??????????????????", desc: "?????????????????????????????????????????????????????", meta: "60 - 90 ????", tags: ["?????????????", "??????????????????"] }
+                }
+            }
+        };
+
+        function createCard(item, lang) {
+            const s = lang.services[item.id];
+            const btnText = lang.btnBook || "Ð?t l?ch ngay";
+            return `
+                <div class="fade-in-section card card-shadow bg-white rounded-[2rem] overflow-hidden flex flex-col h-full">
+                    <div class="relative w-full h-56 bg-slate-100">
+                        <video autoplay muted loop playsinline poster="${item.img}" class="absolute inset-0 w-full h-full object-cover">
+                            <source src="${item.video}" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#2d3436]/40 to-transparent mix-blend-multiply"></div>
+                    </div>
+                    <div class="p-8 flex flex-col flex-grow">
+                        <span class="text-[var(--gold-accent)] font-bold text-xs mb-3 tracking-widest uppercase block">${s.meta}</span>
+                        <h3 class="serif-title text-2xl font-bold text-[var(--primary-color)] mb-4">${s.name}</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-grow">${s.desc}</p>
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            ${s.tags ? s.tags.map(tag => `<span class="benefit-tag">${tag}</span>`).join('') : ''}
+                        </div>
+                        <div class="pt-6 border-t border-slate-50 flex flex-col gap-5 mt-auto">
+                            <div class="flex justify-between items-center px-1">
+                                <span class="text-slate-400 text-sm font-medium">Giá li?u trình:</span>
+                                <span class="text-red-700 font-bold text-xl">${item.prices}</span>
+                            </div>
+                            <a href="${item.link}" target="_blank" class="w-full bg-[#2d3436] text-white py-4 rounded-2xl font-bold text-center text-sm uppercase tracking-widest btn-hover shadow-lg">
+                                ${btnText}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderServices() {
+            const gridRecovery = document.getElementById('grid-recovery');
+            const gridTherapy = document.getElementById('grid-therapy');
+            const lang = translations[currentLang];
+            
+            gridRecovery.innerHTML = '';
+            gridTherapy.innerHTML = '';
+
+            serviceData.forEach(item => {
+                const cardHtml = createCard(item, lang);
+                if (item.cat === 'recovery') {
+                    gridRecovery.innerHTML += cardHtml;
+                } else if (item.cat === 'therapy') {
+                    gridTherapy.innerHTML += cardHtml;
+                }
+            });
+            
+            // Kích ho?t l?i hi?u ?ng fade-in cho các card v?a du?c t?o m?i
+            initFadeIn();
+        }
+
+        // --- H? th?ng b?t s? ki?n Scroll (Intersection Observer) ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15 // Kích ho?t khi hi?n du?c 15% di?n tích
+        };
+
+        const fadeObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Ng?ng theo dõi sau khi dã hi?n (ch? animation 1 l?n)
+                }
+            });
+        }, observerOptions);
+
+        function initFadeIn() {
+            document.querySelectorAll('.fade-in-section').forEach(section => {
+                fadeObserver.observe(section);
+            });
+        }
+        // -----------------------------------------------------------
+
+        function changeLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            
+            document.getElementById('txt-title').innerText = t.title || translations.vi.title;
+            document.getElementById('txt-tagline').innerText = t.tagline || translations.vi.tagline;
+            document.getElementById('txt-ai-title').innerText = t.aiTitle || translations.vi.aiTitle;
+            document.getElementById('txt-ai-desc').innerText = t.aiDesc || translations.vi.aiDesc;
+            document.getElementById('txt-ai-btn').innerText = t.aiBtn || translations.vi.aiBtn;
+            
+            document.getElementById('txt-sec1-title').innerText = t.sec1Title || translations.vi.sec1Title;
+            document.getElementById('txt-sec2-title').innerText = t.sec2Title || translations.vi.sec2Title;
+            document.getElementById('txt-combo-title').innerText = t.comboTitle || translations.vi.comboTitle;
+            
+            // Map updates
+            if (document.getElementById('txt-map-sec-title')) {
+                document.getElementById('txt-map-sec-title').innerText = t.mapSecTitle || translations.vi.mapSecTitle;
+                document.getElementById('txt-map-title').innerText = t.mapTitle || translations.vi.mapTitle;
+                document.getElementById('txt-map-address').innerText = t.mapAddress || translations.vi.mapAddress;
+            }
+            
+            if (t.combo1Desc) document.getElementById('txt-combo1-desc').innerText = t.combo1Desc;
+            if (t.combo2Desc) document.getElementById('txt-combo2-desc').innerText = t.combo2Desc;
+
+            document.querySelectorAll('.txt-btn-book').forEach(el => {
+                el.innerText = t.btnBook || translations.vi.btnBook;
+            });
+
+            document.getElementById('btn-zalo').innerText = t.btnZalo || translations.vi.btnZalo;
+            document.getElementById('btn-call').innerText = t.btnCall || translations.vi.btnCall;
+
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('lang-active'));
+            document.getElementById(`lang-${lang}`).classList.add('lang-active');
+
+            renderServices();
+        }
+
+        function toggleMusic() {
+            const music = document.getElementById('spa-music');
+            const icon = document.getElementById('music-icon');
+            if (music.paused) {
+                music.play().catch(() => {});
+                icon.innerText = "??";
+            } else {
+                music.pause();
+                icon.innerText = "??";
+            }
+        }
+
+        async function getAIConsultation() {
+            const userInput = document.getElementById('aiInput').value;
+            const container = document.getElementById('aiResponseContainer');
+            const textEl = document.getElementById('aiText');
+            const btn = document.getElementById('aiBtn');
+
+            if (!userInput.trim()) return;
+
+            container.classList.remove('hidden');
+            textEl.innerText = currentLang === 'vi' ? "AI dang phân tích..." : "AI is analyzing...";
+            btn.disabled = true;
+
+            const systemPrompt = `You are a senior wellness advisor at "XQ Spa Nha Trang". 
+            Based on the client's symptoms, suggest the best treatment course from our menu.
+            Language: Respond ONLY in ${currentLang}. Style: Warm, luxury, professional. Under 100 words.`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userInput }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+                const data = await response.json();
+                textEl.innerText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Consultation error.";
+            } catch {
+                textEl.innerText = "Connection error.";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        window.onload = () => renderServices();
+    </script>
+</body>
+</html>
